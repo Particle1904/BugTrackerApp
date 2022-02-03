@@ -12,7 +12,7 @@ namespace Shared.src.DTOs
         [StringLength(2000)]
         public string Description { get; set; }
         public bool IsFixed { get; set; }
-        public DateTime CreationDate { get; set; } = DateTime.UtcNow;
-        public DateTime ModifiedDate { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
     }
 }

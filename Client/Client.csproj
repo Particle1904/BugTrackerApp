@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Shared.csproj" />
+    <Folder Include="wwwroot\css\bootstrap\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\bootstrap\" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>

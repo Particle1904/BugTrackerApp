@@ -1,14 +1,15 @@
 ﻿@page "/issues/create"
 @inject HttpClient _httpClient
+@inject IJSRuntime _jsRuntime
 
 <MudContainer Class="pt-12">
     <MudItem xs="12">
         <MudPaper Square="true" Elevation="3" Class="pa-4">
             <MudForm>
-                <MudTextField T="string" Label="Title" Clearable="true" />
-                <MudTextField T="string" Label="Description" Clearable="true" Lines="7" HelperText="Please describe the Bug or Issue in details, including steps to reproduce it if possible."/>
+                <MudTextField @bind-Value="issueDto.Title" T="string" Label="Title" Clearable="true" />
+                <MudTextField @bind-Value="issueDto.Description" T="string" Label="Description" Clearable="true" Lines="7" HelperText="Please describe the Bug or Issue in details, including steps to reproduce it if possible."/>
                 <MudPaper Class="d-flex justify-end" Elevation="0">
-                    <MudButton Class="mt-2" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Send">Send Bug report</MudButton>
+                    <MudButton OnClick="SendRequest" Class="mt-2" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Send">Send Bug report</MudButton>
                 </MudPaper>
             </MudForm>
         </MudPaper>
@@ -16,5 +17,24 @@
 </MudContainer>
 
 @code {
+    private IssueDto? issueDto;
 
+    protected override void OnInitialized()
+    {
+        if (issueDto == null)
+        {
+            issueDto = new IssueDto();
+        }
+    }
+
+    public async Task SendRequest()
+    {
+        if (issueDto != null)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}issues", issueDto);
+            await _jsRuntime.InvokeAsync<string>("console.log", $"{response.Headers.ToString()}");
+            string responseContent = await response.Content.ReadAsStringAsync();
+            await _jsRuntime.InvokeAsync<string>("console.log", $"{responseContent}");
+        }
+    }
 }

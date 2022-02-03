@@ -10,7 +10,7 @@ namespace Shared.src.Models
         public string Description { get; set; }
         public bool IsFixed { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime CreationDate { get; set; } = DateTime.UtcNow;
+        public DateTime CreationDate { get; set; }
         public DateTime ModifiedDate { get; set; }
     }
 }

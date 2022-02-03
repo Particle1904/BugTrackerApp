@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
+﻿using Data.src.Interfaces;
 using Data.src.Services;
-using Data.src.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Shared.src.DTOs;
 using Shared.src.Models;
 
@@ -22,7 +20,7 @@ namespace API.src.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(IssueDto issueDto)
+        public async Task<ActionResult> Create([FromBody] IssueDto issueDto)
         {
             Issue issue = _objectMapper.MapIssueDtoToIssueModel(issueDto);
 
@@ -82,7 +80,7 @@ namespace API.src.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        public ActionResult Delete(int id) 
+        public ActionResult Delete(int id)
         {
             _issuesRepository.Delete(id);
 
