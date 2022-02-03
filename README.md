@@ -1,7 +1,7 @@
 # Bug Tracker Application - Work In Progress
 
-### Projeto: Implementando uma aplicação Fullstack WEB do zero sem a utilização de tutoriais, cursos ou livros. 
-### A ideia deste projeto era começar um projeto e utilizar apenas a documentação das ferramentas e tecnologias utilizadas.
+#### Projeto: Implementando uma aplicação Fullstack WEB do zero sem a utilização de tutoriais, cursos ou livros. 
+#### A ideia deste projeto era começar um projeto e utilizar apenas a documentação das ferramentas e tecnologias utilizadas.
 
 ## Tecnologias utilizadas:
 - Linguagem de programação **C#**.
