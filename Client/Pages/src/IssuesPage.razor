@@ -1,0 +1,49 @@
+﻿@page "/issues"
+@inject HttpClient _httpClient
+
+<MudContainer Class="pa-8">
+    <MudItem>
+        <MudTable Square="true" Elevation="3" Items="@Issues.Take(100)" Hover="true" Bordered="true" Dense="true">
+            <ColGroup>
+                <col style="width: 10px;" />
+                <col style="width: 150px;" />
+                <col />
+                <col style="width: 10px;" />
+                <col style="width: 102px;" />
+                <col style="width: 102px;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTh Style="text-align:end">#</MudTh>
+                <MudTh>Title</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh Style="text-align:end">Fixed</MudTh>
+                <MudTh Style="text-align:end">Creation date</MudTh>
+                <MudTh Style="text-align:end">Last modified</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd Style="text-align:end">@context.Id</MudTd>
+                <MudTd>@context.Title</MudTd>
+                <MudTd>@context.Description</MudTd>
+                <MudTd Style="text-align:end">
+                    <MudIcon Icon="@(context.IsFixed? Icons.Material.Filled.Check : Icons.Material.Filled.Block)" Color="@(context.IsFixed? Color.Success : Color.Error)" />
+                </MudTd>
+                <MudTd Style="text-align:center">@FormatDateText(context.CreationDate)</MudTd>
+                <MudTd Style="text-align:center">@FormatDateText(context.ModifiedDate)</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudItem>
+</MudContainer>
+
+@code {
+    private List<IssueDto>? Issues = new List<IssueDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Issues = await _httpClient.GetFromJsonAsync<List<IssueDto>>($"{_httpClient.BaseAddress}issues");
+    }
+
+    private string FormatDateText(DateTime date)
+    {
+        return $"{date.ToString("dd/mm/yy hh:mm tt")}";
+    }
+}

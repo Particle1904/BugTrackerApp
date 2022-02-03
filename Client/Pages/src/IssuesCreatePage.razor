@@ -2,10 +2,10 @@
 @inject HttpClient _httpClient
 @inject IJSRuntime _jsRuntime
 
-<MudContainer Class="pt-12">
+<MudContainer Class="pa-8">
     <MudItem xs="12">
         <MudPaper Square="true" Elevation="3" Class="pa-4">
-            <MudForm>
+            <MudForm S>
                 <MudTextField @bind-Value="issueDto.Title" T="string" Label="Title" Clearable="true" />
                 <MudTextField @bind-Value="issueDto.Description" T="string" Label="Description" Clearable="true" Lines="7" HelperText="Please describe the Bug or Issue in details, including steps to reproduce it if possible."/>
                 <MudPaper Class="d-flex justify-end" Elevation="0">
