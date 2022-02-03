@@ -1,0 +1,20 @@
+﻿@page "/issues/create"
+@inject HttpClient _httpClient
+
+<MudContainer Class="pt-12">
+    <MudItem xs="12">
+        <MudPaper Square="true" Elevation="3" Class="pa-4">
+            <MudForm>
+                <MudTextField T="string" Label="Title" Clearable="true" />
+                <MudTextField T="string" Label="Description" Clearable="true" Lines="7" HelperText="Please describe the Bug or Issue in details, including steps to reproduce it if possible."/>
+                <MudPaper Class="d-flex justify-end" Elevation="0">
+                    <MudButton Class="mt-2" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Send">Send Bug report</MudButton>
+                </MudPaper>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudContainer>
+
+@code {
+
+}

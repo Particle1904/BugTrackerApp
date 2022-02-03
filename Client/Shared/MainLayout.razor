@@ -1,17 +1,61 @@
-﻿@inherits LayoutComponentBase
+﻿@using MudBlazor.Utilities;
+@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
+<MudThemeProvider Theme="CustomTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="((e) => DrawerToggle())"></MudIconButton>
+        Bug Tracker Application
+        <MudSpacer/>
+        <MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Primary" T="bool" Label="Toggle between Dark and Light modes."></MudSwitch>
+        <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_isDrawerOpen">
         <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code
+{
+    // Logic to Open/Close Drawer Menu.
+    bool _isDrawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _isDrawerOpen = !_isDrawerOpen;
+    }
+}
+
+@code
+{
+    private bool _isDarkMode = true;
+}
+
+@code
+{
+    // Creating a Custom Theme.
+    MudTheme CustomTheme = new MudTheme()
+        {
+            Palette = new Palette()
+            {
+                Primary = new MudColor(80, 125, 210, 255)
+            },
+            PaletteDark = new Palette()
+            {
+            },
+            LayoutProperties = new LayoutProperties()
+            {
+                AppbarHeight = "50px",
+                DrawerWidthLeft = "260px",
+                DrawerWidthRight = "260px"
+            }
+        };
+}
