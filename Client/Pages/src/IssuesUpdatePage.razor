@@ -2,6 +2,7 @@
 @page "/issues/update"
 @inject HttpClient _httpClient
 @inject IJSRuntime _jsRuntime
+@inject NavigationManager _navManager
 
 <MudContainer Class="pa-8">
     <MudItem>
@@ -34,8 +35,7 @@
         </MudAlert>
     </MudItem>
 </MudContainer>
-
-
+<!-- Variables -->
 @code
 {
     [Parameter]
@@ -47,18 +47,24 @@
     private bool _alertHidden;
     private string? _alertText;
 }
+<!-- OnInitializedAsync -->
 @code
 {
     protected override async Task OnInitializedAsync()
     {
         _alertHidden = true;
-        if (issueId != null)
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}issues/get/{issueId}");
+        if (response.StatusCode == HttpStatusCode.OK)
         {
-            var response = await _httpClient.GetFromJsonAsync<IssueDto>($"{_httpClient.BaseAddress}issues/get/{issueId}");
-            issueDto = response;
+            issueDto = await response.Content.ReadFromJsonAsync<IssueDto>();
+        }
+        else
+        {
+            _navManager.NavigateTo($"/issues/update");
         }
     }
 }
+<!-- Custom Methods -->
 @code
 {
     public async Task SendUpdateRequest()

@@ -3,15 +3,7 @@
 
 <MudContainer Class="pa-8">
     <MudItem>
-        <MudTable Square="true" Elevation="3" Items="@Issues.Take(100)" Hover="true" Bordered="true" Dense="true">
-            <ColGroup>
-                <col style="width: 10px;" />
-                <col style="width: 150px;" />
-                <col />
-                <col style="width: 10px;" />
-                <col style="width: 102px;" />
-                <col style="width: 102px;" />
-            </ColGroup>
+        <MudTable Square="true" Elevation="3" Items="@Issues.Take(100)" Hover="true" Dense="false">
             <HeaderContent>
                 <MudTh Style="text-align:end">#</MudTh>
                 <MudTh>Title</MudTh>
@@ -52,6 +44,6 @@
 {
     private string FormatDateText(DateTime date)
     {
-        return $"{date.ToString("dd/mm/yy hh:mm tt")}";
+        return $"{date.ToString("dd/MM/yy hh:mm tt")}";
     }
 }
