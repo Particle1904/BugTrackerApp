@@ -4,7 +4,7 @@
 #### A ideia deste projeto é desenvolver uma aplicação do zero utilizando apenas a documentação das ferramentas e tecnologias utilizadas.
 
 ### WORK IN PROGRESS
-![Image](https://github.com/LeonardoFer/BugTrackerApp/blob/main/Description_Image.png?raw=true)
+![Alt Text](https://github.com/LeonardoFer/BugTrackerApp/blob/main/Description_Image.gif?raw=true)
 
 ## Tecnologias utilizadas:
 - Linguagem de programação **C#**.
@@ -17,4 +17,3 @@
 - **Sqlite** para guardar os dados durante desenvolvimento.
 - **Git Bash** para controle de versão.
 - *E MUITA documentação! Docs C#, CSS, MudBlazer e etc*.
-
