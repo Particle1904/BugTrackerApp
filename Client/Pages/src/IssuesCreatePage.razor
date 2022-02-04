@@ -5,30 +5,35 @@
 <MudContainer Class="pa-8">
     <MudItem xs="12">
         <MudPaper Square="true" Elevation="3" Class="pa-4">
-            <MudForm S>
+            <MudForm>
                 <MudTextField @bind-Value="issueDto.Title" T="string" Label="Title" Clearable="true" HelperText="Maximum 128 characters." />
                 <MudTextField @bind-Value="issueDto.Description" T="string" Label="Description" Clearable="true" Lines="7" HelperText="Please describe the Bug or Issue in details, including steps to reproduce it if possible. Maximum 2000 characters." />
                 <MudPaper Class="d-flex justify-end" Elevation="0">
-                    <MudButton OnClick="SendRequest" Class="mt-2" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Send">Send Bug report</MudButton>
+                    <MudButton Class="mt-2" OnClick="SendRequest"  Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Send">Send Bug report</MudButton>
                 </MudPaper>
             </MudForm>
         </MudPaper>
     </MudItem>
 
         <MudItem Class="pt-4" Style="@($"visibility:{(@_alertHidden? "hidden" : "visible")}")">
-            <MudAlert Severity="@_alertSeverity" Variant="Variant.Filled" Square="true" Elevation="3" ShowCloseIcon="true" CloseIconClicked="CloseButton">
+            <MudAlert Severity="@_alertSeverity" Variant="Variant.Filled" Square="true" Elevation="3" ShowCloseIcon="true" CloseIconClicked="OnCloseButton">
                 @_alertText
             </MudAlert>
         </MudItem>
 </MudContainer>
 
-@code {
+<!-- Variables -->
+@code 
+{
     private IssueDto? issueDto;
 
     Severity _alertSeverity;
     bool _alertHidden = true;
     string _alertText = "";
-
+}
+<!-- OnInitialized -->
+@code
+{
     protected override void OnInitialized()
     {
         _alertHidden = true;
@@ -37,7 +42,10 @@
             issueDto = new IssueDto();
         }
     }
-
+}
+<!-- Custom Methods -->
+@code
+{
     public async Task SendRequest()
     {
         if (issueDto != null)
@@ -64,8 +72,10 @@
             }
         }
     }
-
-    public void CloseButton()
+}
+@code
+{
+    public void OnCloseButton()
     {
         _alertHidden = true;
     }

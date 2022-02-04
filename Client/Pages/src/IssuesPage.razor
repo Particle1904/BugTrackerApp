@@ -34,14 +34,22 @@
     </MudItem>
 </MudContainer>
 
-@code {
+<!-- Variables -->
+@code 
+{
     private List<IssueDto>? Issues = new List<IssueDto>();
-
+}
+<!-- OnInitializedAsync -->
+@code
+{
     protected override async Task OnInitializedAsync()
     {
         Issues = await _httpClient.GetFromJsonAsync<List<IssueDto>>($"{_httpClient.BaseAddress}issues");
     }
-
+}
+<!-- Custom Methods -->
+@code
+{
     private string FormatDateText(DateTime date)
     {
         return $"{date.ToString("dd/mm/yy hh:mm tt")}";
