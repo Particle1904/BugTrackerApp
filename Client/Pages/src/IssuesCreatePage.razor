@@ -27,9 +27,9 @@
 {
     private IssueDto? issueDto;
 
-    Severity _alertSeverity;
-    bool _alertHidden = true;
-    string _alertText = "";
+    private Severity _alertSeverity;
+    private bool _alertHidden = true;
+    private string? _alertText;
 }
 <!-- OnInitialized -->
 @code

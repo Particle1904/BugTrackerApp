@@ -1,4 +1,5 @@
-﻿@using MudBlazor.Utilities;
+﻿@using Client.LayoutComponents
+@using MudBlazor.Utilities
 @inherits LayoutComponentBase
 
 <MudThemeProvider Theme="CustomTheme" />
@@ -7,11 +8,20 @@
 
 <MudLayout>
     <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="((e) => DrawerToggle())"></MudIconButton>
-        Bug Tracker Application
-        <MudSpacer/>
-        <MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Primary" T="bool" Label="Toggle between Dark and Light modes."></MudSwitch>
-        <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" />
+        <MudGrid Class="d-flex justify-space-between">
+            <MudItem Class="mt-3">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="((e) => DrawerToggle())"></MudIconButton>
+                Bug Tracker
+            </MudItem>
+            <MudItem>
+                <MudContainer>
+                    <MudIcon Class="mt-6" Icon="@Icons.Material.Filled.LightMode" Size="Size.Medium"></MudIcon>
+                    <MudSwitch Class="ml-4 mb-4" @bind-Checked="@_isDarkMode" Color="Color.Primary" T="bool"></MudSwitch>
+                    <MudIcon Class="mt-6" Icon="@Icons.Material.Filled.ModeNight" Size="Size.Medium"></MudIcon>
+                    <MudThemeProvider @bind-IsDarkMode="@_isDarkMode"/>
+                </MudContainer>
+            </MudItem>
+        </MudGrid>
     </MudAppBar>
     <MudDrawer @bind-Open="@_isDrawerOpen">
         <NavMenu />

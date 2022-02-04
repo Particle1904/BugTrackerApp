@@ -1,18 +1,37 @@
 ﻿@page "/issues/update/{issueId}"
+@page "/issues/update"
 @inject HttpClient _httpClient
 @inject IJSRuntime _jsRuntime
 
 <MudContainer Class="pa-8">
-    <MudItem xs="12">
-        <MudPaper Square="true" Elevation="3" Class="pa-6">
+    <MudItem>
+        <MudPaper Square="true" Elevation="3" Class="pa-8">
+            <MudForm>
+                <MudGrid>
+                    <MudTextField Class="pr-6" @bind-Value="@issueIdInput" T="int" Label="Issue Id" Clearable="true" HelperText="Input the Id of the Issue you want to update."></MudTextField>
+                    <MudPaper Class="d-flex justify-end" Elevation="0">
+                        <MudButton OnClick="UpdateIssueId" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.PermIdentity">Load Issue</MudButton>
+                    </MudPaper>
+                </MudGrid>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+    <MudItem Class="pt-4" xs="12">
+        <MudPaper Square="true" Elevation="3" Class="pa-4">
             <MudForm>
                 <MudTextField @bind-Value="issueDto.Title" T="string" Label="Title" Clearable="true" HelperText="Maximum 128 characters." />
                 <MudTextField @bind-Value="issueDto.Description" T="string" Label="Description" Clearable="true" Lines="7" HelperText="Please describe the Bug or Issue in details, including steps to reproduce it if possible. Maximum 2000 characters." />
                 <MudPaper Class="d-flex justify-end" Elevation="0">
-                    <MudButton Class="mt-2" OnClick="SendRequest" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Update">Update Issue information</MudButton>
+                    <MudButton Class="mt-2" OnClick="SendUpdateRequest" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Update">Update Issue information</MudButton>
                 </MudPaper>
             </MudForm>
         </MudPaper>
+    </MudItem>
+
+    <MudItem Class="pt-4" style="@($"visibility:{(_alertHidden? "hidden" : "visible")}")">
+        <MudAlert Severity="@_alertSeverity" Square="true" ShowCloseIcon="true" Elevation="3" Variant="Variant.Filled" CloseIconClicked="OnCloseButton">
+            @_alertText
+        </MudAlert>
     </MudItem>
 </MudContainer>
 
@@ -21,24 +40,76 @@
 {
     [Parameter]
     public string? issueId { get; set; }
-
+    public int issueIdInput;
     public IssueDto? issueDto = new IssueDto();
+
+    private Severity _alertSeverity;
+    private bool _alertHidden;
+    private string? _alertText;
 }
 @code
 {
     protected override async Task OnInitializedAsync()
     {
-        var response = await _httpClient.GetFromJsonAsync<IssueDto>($"{_httpClient.BaseAddress}issues/get/{issueId}");
-        issueDto = response;
-        //await _jsRuntime.InvokeAsync<IssueDto>("console.log", $"{issueDto.Id} | {issueDto.Title} | {issueDto.Description}");
+        _alertHidden = true;
+        if (issueId != null)
+        {
+            var response = await _httpClient.GetFromJsonAsync<IssueDto>($"{_httpClient.BaseAddress}issues/get/{issueId}");
+            issueDto = response;
+        }
     }
 }
 @code
 {
-    public async Task SendRequest()
+    public async Task SendUpdateRequest()
     {
-        var response = await _httpClient.PutAsJsonAsync($"{_httpClient.BaseAddress}issues/update/{issueDto.Id}", issueDto);
-        string responseContent = await response.Content.ReadAsStringAsync();
-        await _jsRuntime.InvokeAsync<IssueDto>("console.log", $"{responseContent}");
+        var response = await _httpClient.PutAsJsonAsync($"{_httpClient.BaseAddress}issues/update/{issueDto?.Id}", issueDto);
+       
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            _alertHidden = false;
+            _alertText = $"Success! Issue updated.";
+            _alertSeverity = Severity.Success;
+        }
+        else if (response.StatusCode == HttpStatusCode.BadRequest)
+        {
+            _alertHidden = false;
+            _alertText = $"Error! Incorrect data. Please verify the given information.";
+            _alertSeverity = Severity.Error;
+        }
+        else
+        {
+            _alertHidden = false;
+            _alertText = $"Error {response.StatusCode}! Something went wrong...";
+            _alertSeverity = Severity.Warning;
+        }
+    }
+}
+@code
+{
+    public async Task UpdateIssueId()
+    {
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}issues/get/{issueIdInput}");
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            issueDto = await response.Content.ReadFromJsonAsync<IssueDto>();
+            _alertHidden = false;
+            _alertText = $"Success! Issue with Id {issueIdInput} found.";
+            _alertSeverity = Severity.Success;
+        }
+        else
+        {
+            _alertHidden = false;
+            _alertText = "Issue not found. Are you sure this is the correct Id?";
+            _alertSeverity = Severity.Warning;
+        }        
+    }
+}
+@code
+{
+    public void OnCloseButton()
+    {
+        _alertHidden = true;
     }
 }

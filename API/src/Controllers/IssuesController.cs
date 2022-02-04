@@ -72,6 +72,11 @@ namespace API.src.Controllers
         [HttpPut("update/{id}")]
         public async Task<ActionResult> Update(IssueDto issueDto)
         {
+            if (issueDto == null)
+            {
+                return BadRequest();
+            }
+
             Issue issue = _objectMapper.MapIssueDtoToIssueModel(issueDto);
 
             await _issuesRepository.UpdateAsync(issueDto.Id, issue);
