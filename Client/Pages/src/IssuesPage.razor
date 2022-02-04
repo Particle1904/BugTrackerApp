@@ -1,5 +1,6 @@
 ﻿@page "/issues"
 @inject HttpClient _httpClient
+@inject NavigationManager _navManager
 
 <MudContainer Class="pa-8">
     <MudItem>
@@ -11,6 +12,7 @@
                 <MudTh Style="text-align:end">Fixed</MudTh>
                 <MudTh Style="text-align:end">Creation date</MudTh>
                 <MudTh Style="text-align:end">Last modified</MudTh>
+                <MudTh Style="text-align:end">Edit</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd Style="text-align:end">@context.Id</MudTd>
@@ -21,13 +23,18 @@
                 </MudTd>
                 <MudTd Style="text-align:center">@FormatDateText(context.CreationDate)</MudTd>
                 <MudTd Style="text-align:center">@FormatDateText(context.ModifiedDate)</MudTd>
+                <MudTd Style="text-align:center">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="@($"issues/update/{context.Id}")">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit"></MudIcon>
+                    </MudButton>
+                </MudTd>
             </RowTemplate>
         </MudTable>
     </MudItem>
 </MudContainer>
 
 <!-- Variables -->
-@code 
+@code
 {
     private List<IssueDto>? Issues = new List<IssueDto>();
 }
