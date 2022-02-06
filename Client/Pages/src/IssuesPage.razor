@@ -4,7 +4,7 @@
 
 <MudContainer Class="pa-8">
     <MudItem>
-        <MudTable Square="true" Elevation="3" Items="@Issues.Take(100)" Hover="true" Dense="false">
+        <MudTable FixedHeader="true" Square="true" Elevation="3" Items="@Issues.Take(100)" Hover="true" Dense="false">
             <HeaderContent>
                 <MudTh Style="text-align:end">#</MudTh>
                 <MudTh>Title</MudTh>
@@ -13,19 +13,25 @@
                 <MudTh Style="text-align:end">Creation date</MudTh>
                 <MudTh Style="text-align:end">Last modified</MudTh>
                 <MudTh Style="text-align:end">Edit</MudTh>
+                <MudTh Style="text-align:end">Delete</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd Style="text-align:end">@context.Id</MudTd>
                 <MudTd>@context.Title</MudTd>
-                <MudTd>@context.Description</MudTd>
+                <MudTd Style="text-align:justify">@context.Description</MudTd>
                 <MudTd Style="text-align:end">
                     <MudIcon Icon="@(context.IsFixed? Icons.Material.Filled.Check : Icons.Material.Filled.Block)" Color="@(context.IsFixed? Color.Success : Color.Error)" />
                 </MudTd>
-                <MudTd Style="text-align:center">@FormatDateText(context.CreationDate)</MudTd>
-                <MudTd Style="text-align:center">@FormatDateText(context.ModifiedDate)</MudTd>
+                <MudTd Style="text-align:center">@Utilities.FormatDateText(context.CreationDate)</MudTd>
+                <MudTd Style="text-align:center">@Utilities.FormatDateText(context.ModifiedDate)</MudTd>
                 <MudTd Style="text-align:center">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="@($"issues/update/{context.Id}")">
                         <MudIcon Icon="@Icons.Material.Filled.Edit"></MudIcon>
+                    </MudButton>
+                </MudTd>
+                <MudTd Style="text-align:center">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="@($"issues/delete/{context.Id}")">
+                        <MudIcon Icon="@Icons.Material.Filled.DeleteForever"></MudIcon>
                     </MudButton>
                 </MudTd>
             </RowTemplate>
@@ -44,13 +50,5 @@
     protected override async Task OnInitializedAsync()
     {
         Issues = await _httpClient.GetFromJsonAsync<List<IssueDto>>($"{_httpClient.BaseAddress}issues");
-    }
-}
-<!-- Custom Methods -->
-@code
-{
-    private string FormatDateText(DateTime date)
-    {
-        return $"{date.ToString("dd/MM/yy hh:mm tt")}";
     }
 }

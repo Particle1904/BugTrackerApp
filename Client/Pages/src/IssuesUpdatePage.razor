@@ -1,17 +1,16 @@
-﻿@page "/issues/update/{issueId}"
-@page "/issues/update"
+﻿@page "/issues/update"
+@page "/issues/update/{issueId}"
 @inject HttpClient _httpClient
-@inject IJSRuntime _jsRuntime
 @inject NavigationManager _navManager
 
 <MudContainer Class="pa-8">
     <MudItem>
-        <MudPaper Square="true" Elevation="3" Class="pa-8">
+        <MudPaper Class="pa-8" Square="true" Elevation="3">
             <MudForm>
                 <MudGrid Class="d-flex justify-center">
                     <MudTextField Class="pr-6" @bind-Value="@issueIdInput" T="int" Label="Issue Id" Clearable="true" HelperText="Input the Id of the Issue you want to update."></MudTextField>
-                    <MudPaper Elevation="0" Class="pt-2">
-                        <MudButton OnClick="UpdateIssueId" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Numbers">Load Issue</MudButton>
+                    <MudPaper Class="pt-2" Elevation="0">
+                        <MudButton OnClick="OnLoadIssueButton" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Numbers">Load Issue</MudButton>
                     </MudPaper>
                 </MudGrid>
             </MudForm>
@@ -26,14 +25,14 @@
                     <MudSwitch Class="pt-2" T="bool" Label="Fixed status" @bind-Checked="issueDto.IsFixed" Color="Color.Primary">
                     </MudSwitch>
                     <MudPaper Elevation="0">
-                        <MudButton Class="mt-2" OnClick="SendUpdateRequest" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Update">Update Issue information</MudButton>
+                        <MudButton Class="mt-2" OnClick="OnSendUpdateRequest" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Update">Update Issue information</MudButton>
                     </MudPaper>
                 </MudGrid>
             </MudForm>
         </MudPaper>
     </MudItem>
 
-    <MudItem Class="pt-4" style="@($"visibility:{(_alertHidden? "hidden" : "visible")}")">
+    <MudItem Class="pt-4" Style="@($"visibility:{(_alertHidden? "hidden" : "visible")}")">
         <MudAlert Severity="@_alertSeverity" Square="true" ShowCloseIcon="true" Elevation="3" Variant="Variant.Filled" CloseIconClicked="OnCloseButton">
             @_alertText
         </MudAlert>
@@ -57,6 +56,7 @@
     protected override async Task OnInitializedAsync()
     {
         _alertHidden = true;
+
         var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}issues/get/{issueId}");
         if (response.StatusCode == HttpStatusCode.OK)
         {
@@ -72,46 +72,44 @@
 <!-- Custom Methods -->
 @code
 {
-    public async Task SendUpdateRequest()
+    public async Task OnSendUpdateRequest()
     {
-        var response = await _httpClient.PutAsJsonAsync($"{_httpClient.BaseAddress}issues/update/{issueDto?.Id}", issueDto);
+        var request = await _httpClient.PutAsJsonAsync($"{_httpClient.BaseAddress}issues/update/{issueDto?.Id}", issueDto);
 
-        if (response.StatusCode == HttpStatusCode.OK)
+        _alertHidden = false;
+        if (request.StatusCode == HttpStatusCode.OK)
         {
-            _alertHidden = false;
+
             _alertText = $"Success! Issue updated.";
             _alertSeverity = Severity.Success;
         }
-        else if (response.StatusCode == HttpStatusCode.BadRequest)
+        else if (request.StatusCode == HttpStatusCode.BadRequest)
         {
-            _alertHidden = false;
             _alertText = $"Error! Incorrect data. Please verify the given information.";
             _alertSeverity = Severity.Error;
         }
         else
         {
-            _alertHidden = false;
-            _alertText = $"Error {response.StatusCode}! Something went wrong...";
+            _alertText = $"Error {request.StatusCode}! Something went wrong...";
             _alertSeverity = Severity.Warning;
         }
     }
 }
 @code
 {
-    public async Task UpdateIssueId()
+    public async Task OnLoadIssueButton()
     {
-        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}issues/get/{issueIdInput}");
+        var request = await _httpClient.GetAsync($"{_httpClient.BaseAddress}issues/get/{issueIdInput}");
 
-        if (response.StatusCode == HttpStatusCode.OK)
+        _alertHidden = false;
+        if (request.StatusCode == HttpStatusCode.OK)
         {
-            issueDto = await response.Content.ReadFromJsonAsync<IssueDto>();
-            _alertHidden = false;
+            issueDto = await request.Content.ReadFromJsonAsync<IssueDto>();
             _alertText = $"Success! Issue with Id {issueIdInput} found.";
             _alertSeverity = Severity.Success;
         }
         else
         {
-            _alertHidden = false;
             _alertText = "Issue not found. Are you sure this is the correct Id?";
             _alertSeverity = Severity.Warning;
         }

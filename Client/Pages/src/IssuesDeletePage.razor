@@ -1,0 +1,130 @@
+﻿@page "/issues/delete"
+@page "/issues/delete/{issueId}"
+@inject HttpClient _httpClient
+@inject NavigationManager _navManager
+
+<MudContainer Class="pa-8">
+    <MudItem>
+        <MudPaper Class="pa-8" Square="true" Elevation="3">
+            <MudForm>
+                <MudGrid Class="d-flex justify-center">
+                    <MudTextField Class="pr-6" @bind-Value="issueIdInput" T="int" Label="Issue Id" Clearable="true" HelperText="Input the Id of the Issue you want to delete."></MudTextField>
+                    <MudPaper Class="pt-2" Elevation="0">
+                        <MudButton OnClick="LoadIssueButton" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Numbers">Load Issue</MudButton>
+                    </MudPaper>
+                </MudGrid>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+    <MudItem Style="@($"visibility:{(issueDto == null? "hidden" : "visible")}")" Class="pt-4">
+        <MudSimpleTable Square="true" Elevation="3" Dense="true">
+            <MudTHeadRow>
+                <MudTh Style="text-align:end">#</MudTh>
+                <MudTh>Title</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh Style="text-align:end">Fixed</MudTh>
+                <MudTh Style="text-align:end">Creation date</MudTh>
+                <MudTh Style="text-align:end">Last modified</MudTh>
+            </MudTHeadRow>
+            @if (issueDto != null)
+            {
+                <Row>
+                    <MudTd Style="text-align:end">@issueDto.Id</MudTd>
+                    <MudTd Style="text-align:justify">@issueDto.Title</MudTd>
+                    <MudTd Style="text-align:justify">@issueDto.Description</MudTd>
+                    <MudTd Style="text-align:end">
+                        <MudIcon Icon="@(issueDto.IsFixed? Icons.Material.Filled.Check : Icons.Material.Filled.Block)" Color="@(issueDto.IsFixed? Color.Success : Color.Error)"></MudIcon>
+                    </MudTd>
+                    <MudTd Style="text-align:end">@Utilities.FormatDateText(issueDto.CreationDate)</MudTd>
+                    <MudTd Style="text-align:end">@Utilities.FormatDateText(issueDto.ModifiedDate)</MudTd>
+                </Row>
+            }
+        </MudSimpleTable>
+        <MudPaper Class="d-flex justify-center pa-4" Square="true" Elevation="3">
+            <MudButton Square="true" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.DeleteForever" OnClick="OnDeleteButton">Delete Issue</MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem Class="pt-4" Style="@($"visibility:{(_alertHidden? "hidden" : "visible")}")">
+        <MudAlert Square="true" Variant="Variant.Filled" ShowCloseIcon="true" Severity="@_alertSeverity" Elevation="3" CloseIconClicked="OnCloseIcon">
+            @_alertText
+        </MudAlert>
+    </MudItem>
+</MudContainer>
+
+<!-- Variables -->
+@code {
+    [Parameter]
+    public string? issueId { get; set; }
+    public int issueIdInput;
+    public IssueDto? issueDto;
+
+    private Severity _alertSeverity;
+    private bool _alertHidden;
+    private string? _alertText;
+}
+<!-- OnInitializedAsync -->
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        _alertHidden = true;
+
+        var request = await _httpClient.GetAsync($"{_httpClient.BaseAddress}issues/get/{issueId}");
+        if (request.StatusCode == HttpStatusCode.OK)
+        {
+            issueDto = await request.Content.ReadFromJsonAsync<IssueDto>();
+            issueIdInput = issueDto.Id;
+        }
+        else
+        {
+            _navManager.NavigateTo($"/issues/delete");
+        }
+    }
+}
+@code
+{
+    public async Task LoadIssueButton()
+    {
+        var request = await _httpClient.GetAsync($"{_httpClient.BaseAddress}issues/get/{issueIdInput}");
+
+        _alertHidden = false;
+        if (request.StatusCode == HttpStatusCode.OK)
+        {
+            issueDto = await request.Content.ReadFromJsonAsync<IssueDto>();
+            _alertSeverity = Severity.Success;
+            _alertText = $"Success! Issue loaded.";
+        }
+        else
+        {
+            _alertSeverity = Severity.Warning;
+            _alertText = "Issue not found. Are you sure this is the correct Id?";
+        }
+    }
+}
+@code
+{
+    public async Task OnDeleteButton()
+    {
+        var request = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}issues/delete/{issueDto.Id}");
+
+        _alertHidden = false;
+        if (request.StatusCode == HttpStatusCode.OK)
+        {
+            _alertSeverity = Severity.Success;
+            _alertText = $"Success! Issue with id {issueDto.Id} was deleted.";
+        }
+        else
+        {
+            _alertSeverity = Severity.Warning;
+            _alertText = $"Error {request.StatusCode}! Something went wrong...";
+        }
+    }
+}
+@code
+{
+    public void OnCloseIcon()
+    {
+        _alertHidden = true;
+    }
+}
