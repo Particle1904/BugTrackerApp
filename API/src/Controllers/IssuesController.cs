@@ -29,10 +29,10 @@ namespace API.src.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetAll()
+        [HttpGet("get/skip/{skip:int}/take/{take:int}")]
+        public async Task<ActionResult> GetPaginated(int skip = 0, int take = 25)
         {
-            IEnumerable<Issue>? issues = await _issuesRepository.GetAllAsync();
+            IEnumerable<Issue>? issues = await _issuesRepository.GetPaginated(skip, take);
 
             if (issues == null)
             {
@@ -51,6 +51,12 @@ namespace API.src.Controllers
             }
 
             return Ok(issuesDto);
+        }
+
+        [HttpGet("get/entriesCount")]
+        public async Task<ActionResult> GetIssuesCount()
+        {
+            return Ok(await _issuesRepository.GetIssuesCount());
         }
 
         [HttpGet("get/{id}")]

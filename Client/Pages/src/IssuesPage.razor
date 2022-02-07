@@ -1,10 +1,11 @@
 ﻿@page "/issues"
 @inject HttpClient _httpClient
 @inject NavigationManager _navManager
+@inject IJSRuntime _jsRuntime
 
 <MudContainer Class="pa-8">
     <MudItem>
-        <MudTable FixedHeader="true" Square="true" Elevation="3" Items="@Issues.Take(100)" Hover="true" Dense="false">
+        <MudTable FixedHeader="true" Square="true" Elevation="3" Items="@_issues.Take(25)" Hover="true" Dense="false">
             <HeaderContent>
                 <MudTh Style="text-align:end">#</MudTh>
                 <MudTh>Title</MudTh>
@@ -36,19 +37,43 @@
                 </MudTd>
             </RowTemplate>
         </MudTable>
+        <MudPaper Square="true" Elevation="3" Variant="Variant.Filled">
+            <MudGrid Class="d-flex justify-center pa-4">
+                <MudPagination Color="Color.Primary" Variant="Variant.Filled" Count="@_totalPages" SelectedChanged="OnChangePage" />
+                <MudText Class="pl-8" Style="text-align:justify" Typo="Typo.subtitle1">Amount of Entries: @_totalDbEntries</MudText>
+            </MudGrid>
+        </MudPaper>
     </MudItem>
 </MudContainer>
 
 <!-- Variables -->
 @code
 {
-    private List<IssueDto>? Issues = new List<IssueDto>();
+    private List<IssueDto>? _issues = new List<IssueDto>();
+
+    private int _totalDbEntries;
+    private int _totalPages;
+    private const double _itemsPerPage = 5.0f;
+    private int _currentPage = 1;
 }
 <!-- OnInitializedAsync -->
 @code
 {
     protected override async Task OnInitializedAsync()
     {
-        Issues = await _httpClient.GetFromJsonAsync<List<IssueDto>>($"{_httpClient.BaseAddress}issues");
+        _totalDbEntries = await _httpClient.GetFromJsonAsync<int>($"{_httpClient.BaseAddress}issues/get/entriesCount");
+        await _jsRuntime.InvokeVoidAsync("console.log", $"{_totalDbEntries}");
+
+        _totalPages = (int)Math.Ceiling(_totalDbEntries / _itemsPerPage);
+
+        _issues = await _httpClient.GetFromJsonAsync<List<IssueDto>>($"{_httpClient.BaseAddress}issues/get/skip/{(_currentPage - 1) * _itemsPerPage}/take/{_itemsPerPage}");
+    }
+}
+@code
+{
+    public async Task OnChangePage(int i)
+    {
+        _currentPage = i;
+        _issues = await _httpClient.GetFromJsonAsync<List<IssueDto>>($"{_httpClient.BaseAddress}issues/get/skip/{(_currentPage - 1) * _itemsPerPage}/take/{_itemsPerPage}");
     }
 }

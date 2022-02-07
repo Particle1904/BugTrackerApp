@@ -1,9 +1,6 @@
-﻿using System.Linq;
+﻿using Data.src.Interfaces;
 using Microsoft.EntityFrameworkCore;
-
 using Shared.src.Models;
-using Data.src.Services;
-using Data.src.Interfaces;
 
 namespace Data.src.Repository
 {
@@ -20,19 +17,27 @@ namespace Data.src.Repository
         /// <param name="issue"> The Issue Model to create. </param>
         /// <returns></returns>
         public async Task<Issue> CreateAsync(Issue issue)
-        {           
+        {
             await _dbContext.Issues.AddAsync(issue);
             await _dbContext.SaveChangesAsync();
 
             return issue;
         }
         /// <summary>
-        /// Get a list of all Issues in the DataBase.
+        /// Get a paginated amount of Issues from the database.
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<Issue>> GetAllAsync()
+        public async Task<IEnumerable<Issue>> GetPaginated(int skip = 0, int take = 25)
         {
-            return await _dbContext.Issues.ToListAsync();
+            return await _dbContext.Issues.Where(issue => issue.IsDeleted == false).Skip(skip).Take(take).ToListAsync();
+        }
+        /// <summary>
+        /// Get the amount of Issue entries in the DataBase. Useful for Frontend pagination.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> GetIssuesCount()
+        {
+            return await _dbContext.Issues.Where(issue => issue.IsDeleted == false).CountAsync();
         }
         /// <summary>
         /// Get an existing Issue by its Id.
