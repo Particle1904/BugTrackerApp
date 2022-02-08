@@ -5,7 +5,7 @@
 
 <MudContainer Class="pa-8">
     <MudItem>
-        <MudTable FixedHeader="true" Square="true" Elevation="3" Items="@_issues.Take(25)" Hover="true" Dense="false">
+        <MudTable FixedHeader="true" Square="true" Elevation="3" Items="@_issues?.Take(25)" Hover="true" Dense="false">
             <HeaderContent>
                 <MudTh Style="text-align:end">#</MudTh>
                 <MudTh>Title</MudTh>

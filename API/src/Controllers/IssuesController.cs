@@ -62,7 +62,7 @@ namespace API.src.Controllers
         [HttpGet("get/{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            Issue issue = await _issuesRepository.GetByIdAsync(id);
+            Issue? issue = await _issuesRepository.GetByIdAsync(id);
             if (issue == null)
             {
                 return NotFound();

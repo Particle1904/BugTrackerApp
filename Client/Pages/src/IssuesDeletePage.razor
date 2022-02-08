@@ -74,7 +74,7 @@
         if (request.StatusCode == HttpStatusCode.OK)
         {
             issueDto = await request.Content.ReadFromJsonAsync<IssueDto>();
-            issueIdInput = issueDto.Id;
+            issueIdInput = issueDto!.Id;
         }
         else
         {
@@ -106,7 +106,7 @@
 {
     public async Task OnDeleteButton()
     {
-        var request = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}issues/delete/{issueDto.Id}");
+        var request = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}issues/delete/{issueDto!.Id}");
 
         _alertHidden = false;
         if (request.StatusCode == HttpStatusCode.OK)

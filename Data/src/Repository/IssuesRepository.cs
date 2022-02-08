@@ -18,7 +18,7 @@ namespace Data.src.Repository
         /// <returns></returns>
         public async Task<Issue> CreateAsync(Issue issue)
         {
-            await _dbContext.Issues.AddAsync(issue);
+            await _dbContext.Issues!.AddAsync(issue);
             await _dbContext.SaveChangesAsync();
 
             return issue;
@@ -29,7 +29,7 @@ namespace Data.src.Repository
         /// <returns></returns>
         public async Task<IEnumerable<Issue>> GetPaginated(int skip = 0, int take = 25)
         {
-            return await _dbContext.Issues.Where(issue => issue.IsDeleted == false).Skip(skip).Take(take).ToListAsync();
+            return await _dbContext.Issues!.Where(issue => !issue.IsDeleted).Skip(skip).Take(take).ToListAsync();
         }
         /// <summary>
         /// Get the amount of Issue entries in the DataBase. Useful for Frontend pagination.
@@ -37,16 +37,21 @@ namespace Data.src.Repository
         /// <returns></returns>
         public async Task<int> GetIssuesCount()
         {
-            return await _dbContext.Issues.Where(issue => issue.IsDeleted == false).CountAsync();
+            return await _dbContext.Issues!.Where(issue => !issue.IsDeleted).CountAsync();
         }
         /// <summary>
         /// Get an existing Issue by its Id.
         /// </summary>
         /// <param name="id"> The Issue Id. </param>
         /// <returns></returns>
-        public async Task<Issue> GetByIdAsync(int id)
+        public async Task<Issue?> GetByIdAsync(int id)
         {
-            return await _dbContext.Issues.FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _dbContext.Issues!.FirstOrDefaultAsync(x => x.Id == id);
+            if (result != null)
+            {
+                return result;
+            }
+            return null;
         }
         /// <summary>
         /// Update an existing Issue in the DataBase.
@@ -54,9 +59,10 @@ namespace Data.src.Repository
         /// <param name="id"> The Issue Id. </param>
         /// <param name="issue"> The updated Issue Model. </param>
         /// <returns></returns>
-        public async Task<Issue> UpdateAsync(int id, Issue issue)
+        public async Task<Issue?> UpdateAsync(int id, Issue issue)
         {
-            Issue issueFromDb = await _dbContext.Issues.FirstOrDefaultAsync(issue => issue.Id == id);
+            Issue? issueFromDb = await _dbContext.Issues!.FirstOrDefaultAsync(issue => issue.Id == id);
+
             if (issueFromDb != null)
             {
                 issueFromDb.Title = issue.Title;
@@ -66,7 +72,7 @@ namespace Data.src.Repository
                 await _dbContext.SaveChangesAsync();
             }
 
-            return issueFromDb;
+            return null;
         }
         /// <summary>
         /// Delete and existing Issue in the DataBase.
@@ -74,7 +80,7 @@ namespace Data.src.Repository
         /// <param name="id"> The Issue Id. </param>
         public void Delete(int id)
         {
-            Issue? issue = _dbContext.Issues.FirstOrDefault(issue => issue.Id == id);
+            Issue? issue = _dbContext.Issues!.FirstOrDefault(issue => issue.Id == id);
             if (issue != null)
             {
                 issue.IsDeleted = true;

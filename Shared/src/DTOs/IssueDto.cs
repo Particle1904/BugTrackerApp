@@ -7,10 +7,10 @@ namespace Shared.src.DTOs
         public int Id { get; set; }
         [Required]
         [StringLength(128)]
-        public string Title { get; set; }
+        public string? Title { get; set; }
         [Required]
         [StringLength(2000)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public bool IsFixed { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public DateTime ModifiedDate { get; set; } = DateTime.Now;

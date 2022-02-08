@@ -6,7 +6,7 @@ namespace Data.src.Services
     public class ObjectMapper
     {
         public ObjectMapper()
-        { 
+        {
         }
 
         public Issue MapIssueDtoToIssueModel(IssueDto issueDto)

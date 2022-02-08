@@ -1,0 +1,2 @@
+﻿E:\dev\BugTrackerApp\Shared\src\DTOs\IssueDto.cs
+E:\dev\BugTrackerApp\Shared\src\Models\Issue.cs

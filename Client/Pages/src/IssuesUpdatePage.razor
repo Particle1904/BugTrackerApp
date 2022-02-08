@@ -19,8 +19,8 @@
     <MudItem Class="pt-4" xs="12">
         <MudPaper Square="true" Elevation="3" Class="pa-4">
             <MudForm>
-                <MudTextField @bind-Value="issueDto.Title" T="string" Label="Title" Clearable="true" HelperText="Maximum 128 characters." />
-                <MudTextField @bind-Value="issueDto.Description" T="string" Label="Description" Clearable="true" Lines="7" HelperText="Please describe the Bug or Issue in details, including steps to reproduce it if possible. Maximum 2000 characters." />
+                <MudTextField @bind-Value="issueDto!.Title" T="string" Label="Title" Clearable="true" HelperText="Maximum 128 characters." />
+                <MudTextField @bind-Value="issueDto!.Description" T="string" Label="Description" Clearable="true" Lines="7" HelperText="Please describe the Bug or Issue in details, including steps to reproduce it if possible. Maximum 2000 characters." />
                 <MudGrid Class="d-flex justify-center pa-4">
                     <MudSwitch Class="pt-2" T="bool" Label="Fixed status" @bind-Checked="issueDto.IsFixed" Color="Color.Primary">
                     </MudSwitch>
@@ -61,7 +61,7 @@
         if (response.StatusCode == HttpStatusCode.OK)
         {
             issueDto = await response.Content.ReadFromJsonAsync<IssueDto>();
-            issueIdInput = issueDto.Id;
+            issueIdInput = issueDto!.Id;
         }
         else
         {

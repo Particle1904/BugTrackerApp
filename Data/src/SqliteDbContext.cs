@@ -6,7 +6,7 @@ namespace Data.src
 {
     public class SqliteDbContext : DbContext
     {
-        public DbSet<Issue> Issues { get; set; }
+        public DbSet<Issue>? Issues { get; set; }
         public SqliteDbContext(DbContextOptions<SqliteDbContext> options) : base(options)
         {
         }
