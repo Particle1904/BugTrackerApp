@@ -1,1 +1,0 @@
-E:\dev\BugTrackerApp\api\.sonarqube\out\6

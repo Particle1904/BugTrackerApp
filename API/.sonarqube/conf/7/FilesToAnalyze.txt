@@ -1,9 +1,0 @@
-﻿E:\dev\BugTrackerApp\Data\Migrations\20220201215038_InitialMigration.cs
-E:\dev\BugTrackerApp\Data\Migrations\20220201215038_InitialMigration.Designer.cs
-E:\dev\BugTrackerApp\Data\Migrations\20220204004641_SecondMigration.cs
-E:\dev\BugTrackerApp\Data\Migrations\20220204004641_SecondMigration.Designer.cs
-E:\dev\BugTrackerApp\Data\Migrations\SqliteDbContextModelSnapshot.cs
-E:\dev\BugTrackerApp\Data\src\Interfaces\IIssuesRepository.cs
-E:\dev\BugTrackerApp\Data\src\Repository\IssuesRepository.cs
-E:\dev\BugTrackerApp\Data\src\Services\ObjectMapper.cs
-E:\dev\BugTrackerApp\Data\src\SqliteDbContext.cs
